@@ -77,9 +77,10 @@ export const ConversionOptions = ({
           <Button
             variant="secondary"
             onClick={handleDownload}
-            className="flex-none"
+            className="w-12 h-12 p-0"
+            size="icon"
           >
-            <FileDown className="w-4 h-4" />
+            <FileDown className="w-6 h-6" />
           </Button>
         )}
       </div>
