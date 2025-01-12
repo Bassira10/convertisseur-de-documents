@@ -7,9 +7,10 @@ import { Card } from "@/components/ui/card";
 
 interface FileUploaderProps {
   onFileSelect: (file: File, fileType: string) => void;
+  selectedFile: File | null;
 }
 
-export const FileUploader = ({ onFileSelect }: FileUploaderProps) => {
+export const FileUploader = ({ onFileSelect, selectedFile }: FileUploaderProps) => {
   const [isDragging, setIsDragging] = useState(false);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -55,12 +56,18 @@ export const FileUploader = ({ onFileSelect }: FileUploaderProps) => {
           <Upload className="w-8 h-8 text-primary" />
         </div>
         <div>
-          <h3 className="text-lg font-semibold">Glissez-déposez votre fichier ici</h3>
-          <p className="text-sm text-gray-500 mt-1">ou cliquez pour parcourir</p>
+          <h3 className="text-lg font-semibold">
+            {selectedFile ? selectedFile.name : "Glissez-déposez votre fichier ici"}
+          </h3>
+          <p className="text-sm text-gray-500 mt-1">
+            {selectedFile ? "Cliquez pour changer de fichier" : "ou cliquez pour parcourir"}
+          </p>
         </div>
-        <p className="text-sm text-gray-500">
-          Sélectionnez d'abord un type de conversion ci-dessus
-        </p>
+        {!selectedFile && (
+          <p className="text-sm text-gray-500">
+            Sélectionnez d'abord un type de conversion ci-dessus
+          </p>
+        )}
       </div>
     </Card>
   );

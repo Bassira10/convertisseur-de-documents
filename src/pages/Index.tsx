@@ -13,6 +13,7 @@ const Index = () => {
   const [selectedFormat, setSelectedFormat] = useState<FileFormat>("PNG");
   const [isConverting, setIsConverting] = useState(false);
   const [history, setHistory] = useState<ConversionHistoryItem[]>([]);
+  const [convertedFile, setConvertedFile] = useState<string | null>(null);
 
   const handleFileTypeSelect = (type: FileType) => {
     setFileType(type);
@@ -23,6 +24,7 @@ const Index = () => {
     setSelectedFile(file);
     setFileType(type);
     setSelectedFormat(supportedFormats[type][0]);
+    setConvertedFile(null);
   };
 
   const handleConvert = async () => {
@@ -45,7 +47,16 @@ const Index = () => {
     setHistory((prev) => [historyItem, ...prev]);
 
     try {
+      // Simuler une conversion de fichier
       await new Promise((resolve) => setTimeout(resolve, 2000));
+      
+      // Créer un URL pour le fichier converti (simulation)
+      const reader = new FileReader();
+      reader.onload = () => {
+        setConvertedFile(reader.result as string);
+      };
+      reader.readAsDataURL(selectedFile);
+
       setHistory((prev) =>
         prev.map((item) =>
           item.id === historyItem.id ? { ...item, status: "completed" } : item
@@ -120,7 +131,7 @@ const Index = () => {
           ))}
         </div>
 
-        <FileUploader onFileSelect={handleFileSelect} />
+        <FileUploader onFileSelect={handleFileSelect} selectedFile={selectedFile} />
 
         {selectedFile && (
           <ConversionOptions
@@ -129,6 +140,7 @@ const Index = () => {
             onFormatChange={setSelectedFormat}
             onConvert={handleConvert}
             isConverting={isConverting}
+            convertedFile={convertedFile}
           />
         )}
 
