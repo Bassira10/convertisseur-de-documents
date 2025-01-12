@@ -1,9 +1,9 @@
 import { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
-import { Upload, File, FileText, Music, Video } from "lucide-react";
+import { Upload } from "lucide-react";
 import { toast } from "sonner";
 import { isValidFile } from "@/lib/fileUtils";
-import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
 interface FileUploaderProps {
   onFileSelect: (file: File, fileType: string) => void;
@@ -40,44 +40,13 @@ export const FileUploader = ({ onFileSelect }: FileUploaderProps) => {
     multiple: false
   });
 
-  const getIcon = () => {
-    return (
-      <div className="grid grid-cols-2 gap-4">
-        <div className="flex flex-col items-center">
-          <div className="p-3 rounded-full bg-primary/10">
-            <FileText className="w-6 h-6 text-primary" />
-          </div>
-          <span className="text-xs mt-1">Documents</span>
-        </div>
-        <div className="flex flex-col items-center">
-          <div className="p-3 rounded-full bg-primary/10">
-            <File className="w-6 h-6 text-primary" />
-          </div>
-          <span className="text-xs mt-1">Images</span>
-        </div>
-        <div className="flex flex-col items-center">
-          <div className="p-3 rounded-full bg-primary/10">
-            <Music className="w-6 h-6 text-primary" />
-          </div>
-          <span className="text-xs mt-1">Audio</span>
-        </div>
-        <div className="flex flex-col items-center">
-          <div className="p-3 rounded-full bg-primary/10">
-            <Video className="w-6 h-6 text-primary" />
-          </div>
-          <span className="text-xs mt-1">Vidéo</span>
-        </div>
-      </div>
-    );
-  };
-
   return (
-    <div
+    <Card
       {...getRootProps()}
       className={`
-        relative w-full max-w-2xl mx-auto mt-8 p-12 rounded-lg border-2 border-dashed
+        relative w-full max-w-2xl mx-auto p-12 border-2 border-dashed
         transition-all duration-200 ease-in-out cursor-pointer
-        ${isDragActive ? "border-primary bg-primary/5" : "border-gray-300 hover:border-primary"}
+        ${isDragActive ? "border-primary bg-primary/5" : "border-gray-200 hover:border-primary"}
       `}
     >
       <input {...getInputProps()} />
@@ -89,13 +58,10 @@ export const FileUploader = ({ onFileSelect }: FileUploaderProps) => {
           <h3 className="text-lg font-semibold">Glissez-déposez votre fichier ici</h3>
           <p className="text-sm text-gray-500 mt-1">ou cliquez pour parcourir</p>
         </div>
-        <div className="w-full max-w-xs">
-          {getIcon()}
-        </div>
-        <div className="text-sm text-gray-500">
-          Formats supportés : PDF, DOCX, TXT, PNG, JPG, WEBP, MP3, WAV, OGG, MP4, AVI, MOV
-        </div>
+        <p className="text-sm text-gray-500">
+          Sélectionnez d'abord un type de conversion ci-dessus
+        </p>
       </div>
-    </div>
+    </Card>
   );
 };
