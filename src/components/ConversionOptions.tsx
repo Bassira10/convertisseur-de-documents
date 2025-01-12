@@ -1,4 +1,4 @@
-import { FileFormat, supportedFormats } from "@/lib/fileUtils";
+import { FileFormat, FileType, supportedFormats } from "@/lib/fileUtils";
 import {
   Select,
   SelectContent,
@@ -11,6 +11,7 @@ import { Download } from "lucide-react";
 
 interface ConversionOptionsProps {
   selectedFormat: FileFormat;
+  fileType: FileType;
   onFormatChange: (format: FileFormat) => void;
   onConvert: () => void;
   isConverting: boolean;
@@ -18,10 +19,13 @@ interface ConversionOptionsProps {
 
 export const ConversionOptions = ({
   selectedFormat,
+  fileType,
   onFormatChange,
   onConvert,
   isConverting,
 }: ConversionOptionsProps) => {
+  const availableFormats = supportedFormats[fileType];
+
   return (
     <div className="flex flex-col sm:flex-row items-center gap-4 w-full max-w-md mx-auto mt-8">
       <div className="w-full sm:w-2/3">
@@ -30,12 +34,12 @@ export const ConversionOptions = ({
           onValueChange={(value) => onFormatChange(value as FileFormat)}
         >
           <SelectTrigger>
-            <SelectValue placeholder="Select format" />
+            <SelectValue placeholder="Sélectionner le format" />
           </SelectTrigger>
           <SelectContent>
-            {supportedFormats.map((format) => (
+            {availableFormats.map((format) => (
               <SelectItem key={format} value={format}>
-                Convert to {format}
+                Convertir en {format}
               </SelectItem>
             ))}
           </SelectContent>
@@ -47,11 +51,11 @@ export const ConversionOptions = ({
         disabled={isConverting}
       >
         {isConverting ? (
-          "Converting..."
+          "Conversion..."
         ) : (
           <>
             <Download className="w-4 h-4 mr-2" />
-            Convert
+            Convertir
           </>
         )}
       </Button>

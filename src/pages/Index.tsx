@@ -2,28 +2,30 @@ import { useState } from "react";
 import { FileUploader } from "@/components/FileUploader";
 import { ConversionOptions } from "@/components/ConversionOptions";
 import { ConversionHistory } from "@/components/ConversionHistory";
-import { FileFormat, ConversionHistoryItem } from "@/lib/fileUtils";
+import { FileFormat, FileType, ConversionHistoryItem, supportedFormats } from "@/lib/fileUtils";
 import { toast } from "sonner";
 
 const Index = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [fileType, setFileType] = useState<FileType>("image");
   const [selectedFormat, setSelectedFormat] = useState<FileFormat>("PNG");
   const [isConverting, setIsConverting] = useState(false);
   const [history, setHistory] = useState<ConversionHistoryItem[]>([]);
 
-  const handleFileSelect = (file: File) => {
+  const handleFileSelect = (file: File, type: FileType) => {
     setSelectedFile(file);
+    setFileType(type);
+    setSelectedFormat(supportedFormats[type][0]);
   };
 
   const handleConvert = async () => {
     if (!selectedFile) {
-      toast.error("Please select a file first");
+      toast.error("Veuillez sélectionner un fichier");
       return;
     }
 
     setIsConverting(true);
 
-    // Add to history
     const historyItem: ConversionHistoryItem = {
       id: Date.now().toString(),
       originalName: selectedFile.name,
@@ -31,15 +33,15 @@ const Index = () => {
       targetFormat: selectedFormat,
       timestamp: new Date(),
       status: "pending",
+      fileType: fileType,
     };
 
     setHistory((prev) => [historyItem, ...prev]);
 
     try {
-      // Simulate conversion
+      // Simuler la conversion
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      // Update history item status
       setHistory((prev) =>
         prev.map((item) =>
           item.id === historyItem.id
@@ -48,7 +50,7 @@ const Index = () => {
         )
       );
 
-      toast.success("Conversion completed!");
+      toast.success("Conversion terminée !");
     } catch (error) {
       setHistory((prev) =>
         prev.map((item) =>
@@ -57,7 +59,7 @@ const Index = () => {
             : item
         )
       );
-      toast.error("Conversion failed. Please try again.");
+      toast.error("La conversion a échoué. Veuillez réessayer.");
     } finally {
       setIsConverting(false);
     }
@@ -68,10 +70,10 @@ const Index = () => {
       <div className="container py-12">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            File Converter
+            Convertisseur de Fichiers
           </h1>
           <p className="text-gray-600">
-            Convert your files to any format instantly
+            Convertissez vos fichiers instantanément
           </p>
         </div>
 
@@ -80,6 +82,7 @@ const Index = () => {
         {selectedFile && (
           <ConversionOptions
             selectedFormat={selectedFormat}
+            fileType={fileType}
             onFormatChange={setSelectedFormat}
             onConvert={handleConvert}
             isConverting={isConverting}

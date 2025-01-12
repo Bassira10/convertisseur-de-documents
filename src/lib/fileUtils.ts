@@ -1,4 +1,11 @@
-export type FileFormat = "PNG" | "JPG" | "WEBP";
+// Types pour les différents formats de fichiers
+export type ImageFormat = "PNG" | "JPG" | "WEBP";
+export type DocumentFormat = "PDF" | "DOCX" | "TXT";
+export type AudioFormat = "MP3" | "WAV" | "OGG";
+export type VideoFormat = "MP4" | "AVI" | "MOV";
+
+export type FileFormat = ImageFormat | DocumentFormat | AudioFormat | VideoFormat;
+export type FileType = "image" | "document" | "audio" | "video";
 
 export interface ConversionHistoryItem {
   id: string;
@@ -7,12 +14,32 @@ export interface ConversionHistoryItem {
   targetFormat: FileFormat;
   timestamp: Date;
   status: "pending" | "completed" | "error";
+  fileType: FileType;
 }
 
-export const supportedFormats: FileFormat[] = ["PNG", "JPG", "WEBP"];
+export const supportedFormats = {
+  image: ["PNG", "JPG", "WEBP"] as ImageFormat[],
+  document: ["PDF", "DOCX", "TXT"] as DocumentFormat[],
+  audio: ["MP3", "WAV", "OGG"] as AudioFormat[],
+  video: ["MP4", "AVI", "MOV"] as VideoFormat[],
+};
 
-export const isImageFile = (file: File): boolean => {
-  return file.type.startsWith("image/");
+export const isValidFile = (file: File): { isValid: boolean; fileType: FileType | null } => {
+  const type = file.type.split('/')[0];
+  
+  switch (type) {
+    case 'image':
+      return { isValid: true, fileType: 'image' };
+    case 'application':
+    case 'text':
+      return { isValid: true, fileType: 'document' };
+    case 'audio':
+      return { isValid: true, fileType: 'audio' };
+    case 'video':
+      return { isValid: true, fileType: 'video' };
+    default:
+      return { isValid: false, fileType: null };
+  }
 };
 
 export const getFileExtension = (filename: string): string => {
